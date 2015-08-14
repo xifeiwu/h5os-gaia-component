@@ -416,5 +416,6 @@ function mixin(target, source) {
 
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){
-c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
-return w[n];},m.exports,m);w[n]=m.exports;};})('gaia-component',this));
+c(require,exports,module);}:function(c,d){c=(typeof c == 'function')?c:d;
+var m={exports:{}};c(function(n){return w[n];},m.exports,m);w[n]=m.exports;};})
+('gaia-component',this));
