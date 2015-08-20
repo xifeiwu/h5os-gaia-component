@@ -1,4 +1,4 @@
-/* globals define */
+/* globals define, SoftKeysHelper */
 ;(function(define){'use strict';define(function(require,exports,module){
 /**
  * Locals
@@ -88,8 +88,38 @@ var base = {
 
     createdCallback: function() {
       if (this.rtl) { addDirObserver(); }
+      this.createSoftKeyHandler();
       injectLightCss(this);
       this.created();
+    },
+
+    createSoftKeyHandler: function() {
+      this._softKeyContent = {};
+      var keys = SoftKeysHelper.registeredKeys() || {};
+      for (var name in keys) {
+        this._softKeyContent[name] = keys[name];
+      }
+
+      window.addEventListener('focus', function(evt) {
+        if (evt.target === this && SoftKeysHelper) {
+          SoftKeysHelper.registerKeys(this._softKeyContent);
+        }
+      }.bind(this), true);
+
+      window.addEventListener('blur', function(evt) {
+        if (evt.target === this && SoftKeysHelper) {
+          SoftKeysHelper.registerKeys({});
+        }
+      }.bind(this), true);
+    },
+
+    updateSoftKeyContent: function(keys) {
+      for(var name in keys) {
+        this._softKeyContent[name] = keys[name];
+      }
+      if (document.activeElement === this && SoftKeysHelper) {
+        SoftKeysHelper.registerKeys(this._softKeyContent);
+      }
     },
 
     /**
