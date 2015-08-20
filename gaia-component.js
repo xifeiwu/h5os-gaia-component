@@ -99,18 +99,6 @@ var base = {
       for (var name in keys) {
         this._softKeyContent[name] = keys[name];
       }
-
-      window.addEventListener('focus', function(evt) {
-        if (evt.target === this && SoftKeysHelper) {
-          SoftKeysHelper.registerKeys(this._softKeyContent);
-        }
-      }.bind(this), true);
-
-      window.addEventListener('blur', function(evt) {
-        if (evt.target === this && SoftKeysHelper) {
-          SoftKeysHelper.registerKeys({});
-        }
-      }.bind(this), true);
     },
 
     updateSoftKeyContent: function(keys) {
@@ -216,6 +204,23 @@ var base = {
     }
   }
 };
+
+(function dispatchSoftkeyEvent() {
+
+  window.addEventListener('focus', function onFocus(evt) {
+    var target = evt.target;
+    if (target.GaiaComponent && SoftKeysHelper) {
+      SoftKeysHelper.registerKeys(target._softKeyContent);
+    }
+  }, true);
+
+  window.addEventListener('blur', function onBlur(evt) {
+    var target = evt.target;
+    if (target.GaiaComponent && SoftKeysHelper) {
+      SoftKeysHelper.registerKeys({});
+    }
+  }, true);
+})();
 
 /**
  * The default base prototype to use
