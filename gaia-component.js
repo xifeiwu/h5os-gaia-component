@@ -88,25 +88,22 @@ var base = {
 
     createdCallback: function() {
       if (this.rtl) { addDirObserver(); }
-      this.createSoftKeyHandler();
+      this._softKeyContent = {};
+      this._usedSoftKeys = [];
       injectLightCss(this);
       this.created();
     },
 
-    createSoftKeyHandler: function() {
-      this._softKeyContent = {};
-      var keys = SoftKeysHelper.registeredKeys() || {};
-      for (var name in keys) {
-        this._softKeyContent[name] = keys[name];
-      }
-    },
-
     updateSoftKeyContent: function(keys) {
-      for(var name in keys) {
-        this._softKeyContent[name] = keys[name];
-      }
+      var name;
+      this._softKeyContent = keys;
+      this._usedSoftKeys = Object.keys(this._softKeyContent);
       if (document.activeElement === this && SoftKeysHelper) {
-        SoftKeysHelper.registerKeys(this._softKeyContent);
+        keys = SoftKeysHelper.registeredKeys() || {};
+        for (name in this._softKeyContent) {
+          keys[name] = this._softKeyContent[name];
+        }
+        SoftKeysHelper.registerKeys(keys);
       }
     },
 
@@ -209,15 +206,25 @@ var base = {
 
   window.addEventListener('focus', function onFocus(evt) {
     var target = evt.target;
-    if (target.GaiaComponent && SoftKeysHelper) {
-      SoftKeysHelper.registerKeys(target._softKeyContent);
+    if (SoftKeysHelper &&
+        target.GaiaComponent &&
+        evt.target === document.activeElement) {
+      var keys = SoftKeysHelper.registeredKeys() || {};
+      for (var name in target._softKeyContent) {
+        keys[name] = target._softKeyContent[name];
+      }
+      SoftKeysHelper.registerKeys(keys);
     }
   }, true);
 
   window.addEventListener('blur', function onBlur(evt) {
     var target = evt.target;
     if (target.GaiaComponent && SoftKeysHelper) {
-      SoftKeysHelper.registerKeys({});
+      var keys = SoftKeysHelper.registeredKeys() || {};
+      target._usedSoftKeys.forEach(function(name) {
+        keys[name] = '';
+      });
+      SoftKeysHelper.registerKeys(keys);
     }
   }, true);
 })();
