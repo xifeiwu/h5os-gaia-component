@@ -98,7 +98,7 @@ var base = {
       var name;
       this._softKeyContent = keys;
       this._usedSoftKeys = Object.keys(this._softKeyContent);
-      if (document.activeElement === this && SoftKeysHelper) {
+      if (document.activeElement === this && window.SoftKeysHelper) {
         keys = SoftKeysHelper.registeredKeys() || {};
         for (name in this._softKeyContent) {
           keys[name] = this._softKeyContent[name];
@@ -206,7 +206,7 @@ var base = {
 
   window.addEventListener('focus', function onFocus(evt) {
     var target = evt.target;
-    if (SoftKeysHelper &&
+    if (window.SoftKeysHelper &&
         target.GaiaComponent &&
         evt.target === document.activeElement) {
       var keys = SoftKeysHelper.registeredKeys() || {};
@@ -219,7 +219,7 @@ var base = {
 
   window.addEventListener('blur', function onBlur(evt) {
     var target = evt.target;
-    if (target.GaiaComponent && SoftKeysHelper) {
+    if (target.GaiaComponent && window.SoftKeysHelper) {
       var keys = SoftKeysHelper.registeredKeys() || {};
       target._usedSoftKeys.forEach(function(name) {
         keys[name] = '';
