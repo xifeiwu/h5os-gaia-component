@@ -101,7 +101,8 @@ var base = {
       if (document.activeElement === this && window.SoftKeysHelper) {
         keys = SoftKeysHelper.registeredKeys() || {};
         for (name in this._softKeyContent) {
-          keys[name] = this._softKeyContent[name];
+          var key = this._softKeyContent[name].toLowerCase();
+          keys[name] = (navigator.mozL10n) ? navigator.mozL10n.get(key) : key;
         }
         SoftKeysHelper.registerKeys(keys);
       }
