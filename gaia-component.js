@@ -97,12 +97,15 @@ var base = {
     updateSoftKeyContent: function(keys) {
       var name;
       this._softKeyContent = keys;
+      for (name in this._softKeyContent) {
+        this._softKeyContent[name] = this._softKeyContent[name].toLowerCase();
+      }
+
       this._usedSoftKeys = Object.keys(this._softKeyContent);
       if (document.activeElement === this && window.SoftKeysHelper) {
         keys = SoftKeysHelper.registeredKeys() || {};
         for (name in this._softKeyContent) {
-          var key = this._softKeyContent[name].toLowerCase();
-          keys[name] = (navigator.mozL10n) ? navigator.mozL10n.get(key) : key;
+          keys[name] = this._softKeyContent[name];
         }
         SoftKeysHelper.registerKeys(keys);
       }
