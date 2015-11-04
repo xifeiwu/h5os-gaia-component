@@ -40,7 +40,8 @@ exports.register = function(name, props) {
       props.templateString = props.template;
     }
 
-    var output = processCss(template, name);
+    var elementName = extendElement ? extendElement : name;
+    var output = processCss(template, elementName);
 
     props.template = document.createElement('template');
     props.template.innerHTML = output.template;
