@@ -19,6 +19,7 @@ var noop  = function() {};
  * @public
  */
 exports.register = function(name, props) {
+  var extendElement = props.extendElement || null;
   var baseProto = getBaseProto(props.extends);
   var template = props.template || baseProto.templateString;
 
@@ -68,9 +69,12 @@ exports.register = function(name, props) {
   var proto = createProto(baseProto, props);
   Object.defineProperties(proto, descriptors);
 
+  var option = extendElement ?
+    { prototype: proto, extends: extendElement } : { prototype: proto };
+
   // Register the custom-element and return the constructor
   try {
-    return document.registerElement(name, { prototype: proto });
+    return document.registerElement(name, option);
   } catch (e) {
     if (e.name !== 'NotSupportedError') {
       throw e;
