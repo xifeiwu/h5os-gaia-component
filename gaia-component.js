@@ -103,7 +103,18 @@ var base = {
       var name;
       this._softKeyContent = keys;
       for (name in this._softKeyContent) {
-        this._softKeyContent[name] = this._softKeyContent[name].toLowerCase();
+        var key = this._softKeyContent[name].toLowerCase();
+        if (navigator.mozL10n &&
+            navigator.mozL10n.readyState === 'complete') {
+          key = navigator.mozL10n.get(key) || key;
+        }
+        this._softKeyContent[name] = key;
+      }
+      if (navigator.mozL10n &&
+          navigator.mozL10n.readyState !== 'complete') {
+        navigator.mozL10n.once(function() {
+          thia.updateSoftKeyContent(this._softKeyContent);
+        }.bind(this));
       }
 
       this._usedSoftKeys = Object.keys(this._softKeyContent);
@@ -111,9 +122,6 @@ var base = {
         keys = SoftKeysHelper.registeredKeys() || {};
         for (name in this._softKeyContent) {
           keys[name] = this._softKeyContent[name];
-          if (navigator.mozL10n) {
-            keys[name] = navigator.mozL10n.get(keys[name]) || keys[name];
-          }
         }
         SoftKeysHelper.registerKeys(keys);
       }
