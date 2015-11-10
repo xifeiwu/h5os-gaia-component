@@ -111,6 +111,9 @@ var base = {
         keys = SoftKeysHelper.registeredKeys() || {};
         for (name in this._softKeyContent) {
           keys[name] = this._softKeyContent[name];
+          if (navigator.mozL10n) {
+            keys[name] = navigator.mozL10n.get(keys[name]) || keys[name];
+          }
         }
         SoftKeysHelper.registerKeys(keys);
       }
