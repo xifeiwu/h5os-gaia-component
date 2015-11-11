@@ -113,7 +113,7 @@ var base = {
       if (navigator.mozL10n &&
           navigator.mozL10n.readyState !== 'complete') {
         navigator.mozL10n.once(function() {
-          thia.updateSoftKeyContent(this._softKeyContent);
+          this.updateSoftKeyContent(this._softKeyContent);
         }.bind(this));
       }
 
