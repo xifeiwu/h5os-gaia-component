@@ -93,38 +93,11 @@ var base = {
 
     createdCallback: function() {
       if (this.rtl) { addDirObserver(); }
-      this._softKeyContent = {};
-      this._usedSoftKeys = [];
       injectLightCss(this);
       this.created();
     },
 
-    updateSoftKeyContent: function(keys) {
-      var name;
-      this._softKeyContent = keys;
-      for (name in this._softKeyContent) {
-        var key = this._softKeyContent[name].toLowerCase();
-        if (navigator.mozL10n &&
-            navigator.mozL10n.readyState === 'complete') {
-          key = navigator.mozL10n.get(key) || key;
-        }
-        this._softKeyContent[name] = key;
-      }
-      if (navigator.mozL10n &&
-          navigator.mozL10n.readyState !== 'complete') {
-        navigator.mozL10n.once(function() {
-          this.updateSoftKeyContent(this._softKeyContent);
-        }.bind(this));
-      }
-
-      this._usedSoftKeys = Object.keys(this._softKeyContent);
-      if (document.activeElement === this && window.SoftKeysHelper) {
-        keys = SoftKeysHelper.registeredKeys() || {};
-        for (name in this._softKeyContent) {
-          keys[name] = this._softKeyContent[name];
-        }
-        SoftKeysHelper.registerKeys(keys);
-      }
+    updateSoftKeyContent: function() {
     },
 
     /**
@@ -221,33 +194,6 @@ var base = {
     }
   }
 };
-
-(function dispatchSoftkeyEvent() {
-
-  window.addEventListener('focus', function onFocus(evt) {
-    var target = evt.target;
-    if (window.SoftKeysHelper &&
-        target.GaiaComponent &&
-        evt.target === document.activeElement) {
-      var keys = SoftKeysHelper.registeredKeys() || {};
-      for (var name in target._softKeyContent) {
-        keys[name] = target._softKeyContent[name];
-      }
-      SoftKeysHelper.registerKeys(keys);
-    }
-  }, true);
-
-  window.addEventListener('blur', function onBlur(evt) {
-    var target = evt.target;
-    if (target.GaiaComponent && window.SoftKeysHelper) {
-      var keys = SoftKeysHelper.registeredKeys() || {};
-      target._usedSoftKeys.forEach(function(name) {
-        keys[name] = '';
-      });
-      SoftKeysHelper.registerKeys(keys);
-    }
-  }, true);
-})();
 
 /**
  * The default base prototype to use
