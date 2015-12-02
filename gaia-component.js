@@ -41,7 +41,13 @@ exports.register = function(name, props) {
     }
 
     var elementName = extendElement ? extendElement : name;
-    var output = processCss(template, elementName);
+    var output;
+    if (typeof template === 'string') {
+      output = processCss(template, elementName);
+      props._template = template;
+    } else if (typeof template === 'object' && props._template) {
+      output = processCss(props._template, elementName);
+    }
 
     props.template = document.createElement('template');
     props.template.innerHTML = output.template;
