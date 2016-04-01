@@ -100,6 +100,7 @@ var base = {
     createdCallback: function() {
       if (this.rtl) { addDirObserver(); }
       injectLightCss(this);
+      this.registerLargeTextEventLister();
       this.created();
     },
 
@@ -175,6 +176,16 @@ var base = {
       var internal = this.shadowRoot.firstElementChild;
       removeAttribute.call(internal, name);
       removeAttribute.call(this, name);
+    },
+
+    registerLargeTextEventLister: function() {
+      this._setLargeTextClass();
+      window.addEventListener('largetextenabledchanged',
+        this._setLargeTextClass.bind(this));
+    },
+
+    _setLargeTextClass: function() {
+      this.classList.toggle('large-text', navigator.largeTextEnabled);
     }
   },
 
